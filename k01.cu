@@ -1,4 +1,4 @@
-//nvcc k01.cu -o k01
+//nvcc k01.cu -o k01 -gencode arch=compute_89,code=compute_89 --threads 0 --std=c++11 -lcufft
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
@@ -13,13 +13,13 @@ __global__ void kernel(){
                  + threadIdx.x
                  + blockId * threadsPerBlock;
     printf("ThreadIdx.x,y,z=%d,%d,%d,%d,%d,%d,%ld\n",
-            threadIdx.x,threadIdx.y,threadIdx.z,
-            blockIdx.x,blockIdx.y,blockIdx.z,threadId);
+            blockIdx.z,blockIdx.y,blockIdx.x,
+            threadIdx.z,threadIdx.y,threadIdx.x,threadId);
 }
 
 int main(){
-    dim3 threadABlock(3);
-    dim3 blockAGrid(4);
+    dim3 threadABlock(2,2,2);
+    dim3 blockAGrid(2,2,2);
     kernel<<<blockAGrid,threadABlock>>>();
     cudaDeviceSynchronize();
     return 0;
